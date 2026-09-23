@@ -1,0 +1,19 @@
+{
+  "default": {
+    "browser": "Google Chrome"
+  },
+  "rules": [
+    {
+      "name": "ZephyrCloudIO (work)",
+      "match": "(?i)^https?://(?:www\\.)?github\\.com/zephyrcloudio(?:/|$)",
+      "browser": "Google Chrome",
+      "profile": "Zephyr"
+    },
+    {
+      "name": "Personal (specta-rs / oscartbeaumont)",
+      "match": "(?i)^https?://(?:www\\.)?github\\.com/(?:specta-rs|oscartbeaumont)(?:/|$)",
+      "browser": "Google Chrome",
+      "profile": "Oscar"
+    }
+  ]
+}
