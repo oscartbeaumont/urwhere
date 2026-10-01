@@ -2,7 +2,7 @@
 name = "urwhere"
 version = "0.1.0"
 edition = "2021"
-rust-version = "1.71"
+rust-version = "1.80"
 description = "A tiny, fast macOS default browser that routes URLs to different Chrome profiles using regex rules."
 
 [[bin]]

@@ -29,6 +29,10 @@ fn main() -> ExitCode {
             list_profiles();
             ExitCode::SUCCESS
         }
+        Some("--sync-profiles") => {
+            sync_profiles();
+            ExitCode::SUCCESS
+        }
         Some("--set-default") => {
             set_default();
             ExitCode::SUCCESS
@@ -84,16 +88,37 @@ fn test(url: &str) {
 }
 
 fn list_profiles() {
-    for browser in ["Google Chrome"] {
+    for browser in profiles::KNOWN_BROWSERS {
         let entries = profiles::all(browser);
         if entries.is_empty() {
-            println!("{browser}: no profiles found");
             continue;
         }
         println!("{browser}:");
         for (directory, name) in entries {
             println!("  {name:<28} -> {directory}");
         }
+    }
+}
+
+fn sync_profiles() {
+    let (refreshed, blocked) = profiles::sync();
+    if refreshed.is_empty() && blocked.is_empty() {
+        println!("no Chromium profiles found");
+        return;
+    }
+    for browser in &refreshed {
+        println!("synced  {browser}");
+    }
+    for browser in &blocked {
+        println!("blocked {browser}");
+    }
+    if !blocked.is_empty() {
+        println!();
+        println!(
+            "Some profiles could not be read. macOS protects these directories from \
+             third-party apps; run this command from a Terminal granted Full Disk Access, \
+             or use a directory name (e.g. \"Profile 1\") in ~/.config/urwhere.json."
+        );
     }
 }
 
@@ -174,12 +199,14 @@ USAGE:
   urwhere                 Run as the background URL handler (used by macOS)
   urwhere --test <url>    Show which rule/profile a URL would use
   urwhere --profiles      List known Chrome profiles and their directories
+  urwhere --sync-profiles Refresh the cached profile map from Chrome's data
   urwhere --set-default   Ask macOS to make urwhere the default browser
   urwhere --log           Print the routing log
   urwhere --help          Show this message
 
 CONFIG:
   ~/.config/urwhere.json  (reloaded automatically when it changes)
+  Cache: ~/Library/Application Support/urwhere/profiles.json
   Log: ~/Library/Logs/urwhere.log",
         env!("CARGO_PKG_VERSION")
     );

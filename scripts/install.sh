@@ -37,6 +37,12 @@ fi
 echo "==> Asking macOS to make urwhere the default browser"
 "$DEST/Contents/MacOS/urwhere" --set-default || true
 
+# macOS 27+ blocks third-party apps from reading Chrome's profile data, so the
+# background agent can't discover profile names on its own. Populate the cache
+# now, while we're running from a shell that can still read it.
+echo "==> Caching Chrome profile map"
+"$DEST/Contents/MacOS/urwhere" --sync-profiles || true
+
 echo "==> Starting the background agent"
 open "$DEST"
 
